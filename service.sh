@@ -36,11 +36,11 @@ else
 fi
 
 if ! boolval "$_cron_disabled"; then
-  sh $MODPATH/propscleaner.sh &
+  sh $MODPATH/props_cleaner.sh &
 
   [ ! -f $MODPATH/crontabs/root ] && {
     mkdir -p $MODPATH/crontabs
-    echo "30 * * * * sh $MODPATH/propscleaner.sh > /dev/null 2>&1 &" | busybox crontab -c $MODPATH/crontabs - # once every 60 minutes
+    echo "30 * * * * sh $MODPATH/props_cleaner.sh > /dev/null 2>&1 &" | busybox crontab -c $MODPATH/crontabs - # once every 60 minutes
   }
 
   # Start crond every time service.sh starts
@@ -183,10 +183,10 @@ set_permissions /sdcard/TWRP 750
 
 ### VBMeta ###
 
-# Set vbmeta verifiedBootHash from file (if present and not empty)
+# Restore vbmeta digest captured by post-fs-data
 BOOT_HASH_FILE="/data/adb/boot_hash"
-if [ -s "$BOOT_HASH_FILE" ] && grep -qE '^[a-f0-9]{64}$' "$BOOT_HASH_FILE"; then
-    force_resetprop ro.boot.vbmeta.digest "$(tr -d '[:space:]' | tr '[:upper:]' '[:lower:]' <"$BOOT_HASH_FILE")"
+if [ -s "\( BOOT_HASH_FILE" ] && grep -qE '^[a-f0-9]{64} \)' "$BOOT_HASH_FILE"; then
+    force_resetprop ro.boot.vbmeta.digest "$(tr -d '[:space:]' < "$BOOT_HASH_FILE")"
 fi
 
 # Fix altered VBMeta

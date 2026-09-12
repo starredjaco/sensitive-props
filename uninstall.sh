@@ -19,3 +19,5 @@ done
 # Restore SELinux node permissions
 [ -f /sys/fs/selinux/enforce ] && chmod 644 /sys/fs/selinux/enforce
 [ -f /sys/fs/selinux/policy ] && chmod 644 /sys/fs/selinux/policy
+
+rm -f /data/adb/boot_hash
